@@ -19,3 +19,13 @@ Check credential
 ```shell
 aws sts get-caller-identity
 ```
+
+in gitpod, install awscli,
+1. open terminal
+2. navigate to /workspace 
+
+```shell
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
