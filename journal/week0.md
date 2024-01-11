@@ -11,6 +11,7 @@
 
 ### 7. AWS CLI
 
+Go to AWS, IAM>user> your username >  genrate access keys and secret access keys, set up gitpod environment variables.
 [Activating](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-prompting.html#cli-usage-auto-prompt-configure) auto-prompt on AWS couldshell
 ```shell
 aws --cli-auto-prompt
@@ -29,3 +30,7 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 ```
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+export AWS_DEFAULT_REGION=""
+
