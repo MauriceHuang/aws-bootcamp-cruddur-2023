@@ -8,7 +8,7 @@
 - [ ] 5. Research the technical and service limits of specific services and how they could impact the technical path for technical flexibility. 
 - [ ] 6. Open a support ticket and request a service limit
 - [ ] 7. AWS CLI
-
+```bash ```
 ### 7. AWS CLI
 
 Go to AWS, IAM>user> your username >  genrate access keys and secret access keys, set up gitpod environment variables.
@@ -79,10 +79,83 @@ To insert environment varible for aws. Type the following in gitpod terminal, in
 Here's an example:
 
 ```bash
-export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
-export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-export AWS_DEFAULT_REGION="us-west-2"
+gp env AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+gp env AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+gp env AWS_DEFAULT_REGION="us-west-2"
+```
+## Using AWS CLI to create budget and budget alarm.
+
+```bash
+aws budgets create-budget \
+    --account-id $AWS_ACCOUNT_ID\
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/budget-notifications-with-subscribers.json
+```
+Getting `account-d` by entering the following `export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)` in the terminal
+
+
+## Using AWS CLI to create a billing alarm
+
+https://docs.aws.amazon.com/cli/latest/reference/sns/create-topic.html
+
+```bash 
+aws sns create-topic --billing-alarm
+```
+returns the following:
+```bash
+arn:aws:sns:ap-southeast-1:474584145453:billing-alarm
+```
+update the arn below and enter into terminal.
+```bash 
+aws sns subscribe \
+    --topic-arn="arn:aws:sns:ap-southeast-1:474584145453:billing-alarm" \
+    --protocol=email \
+    --notification-endpoint=maurice.huang.pai.so@gmail.com
 ```
 
+## Using AWS CLI to create a cloudwatch alarm
 
-
+https://repost.aws/knowledge-center/cloudwatch-estimatedcharges-alarm
+create a alarm-config.json
+with the following script
+```json
+{
+    "AlarmName": "DailyEstimatedCharges",
+    "AlarmDescription": "This alarm would be triggered if the daily estimated charges exceeds 1$",
+    "ActionsEnabled": true,
+    "AlarmActions": [
+        "arn:aws:sns:ap-southeast-1:474584145453:billing-alarm"
+    ],
+    "EvaluationPeriods": 1,
+    "DatapointsToAlarm": 1,
+    "Threshold": 1,
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "TreatMissingData": "breaching",
+    "Metrics": [{
+        "Id": "m1",
+        "MetricStat": {
+            "Metric": {
+                "Namespace": "AWS/Billing",
+                "MetricName": "EstimatedCharges",
+                "Dimensions": [{
+                    "Name": "Currency",
+                    "Value": "USD"
+                }]
+            },
+            "Period": 86400,
+            "Stat": "Maximum"
+        },
+        "ReturnData": false
+    },
+    {
+        "Id": "e1",
+        "Expression": "IF(RATE(m1)>0,RATE(m1)*86400,0)",
+        "Label": "DailyEstimatedCharges",
+        "ReturnData": true
+    }]
+  }
+```
+Then run the follow code in terminal. 
+```bash
+aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm-config.json
+```
