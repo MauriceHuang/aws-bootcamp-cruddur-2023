@@ -7,7 +7,7 @@
 - [ ] 4. Create an architectural diagram (to the best of your ability) the CI/CD logical pipeline in Lucid Charts
 - [ ] 5. Research the technical and service limits of specific services and how they could impact the technical path for technical flexibility. 
 - [ ] 6. Open a support ticket and request a service limit
-- [ ] 7. AWS CLI
+- [x] 7. AWS CLI
 ```bash ```
 ### 7. AWS CLI
 
@@ -83,7 +83,7 @@ gp env AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 gp env AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 gp env AWS_DEFAULT_REGION="us-west-2"
 ```
-## Using AWS CLI to create budget and budget alarm.
+### Using AWS CLI to create budget and budget alarm.
 
 ```bash
 aws budgets create-budget \
@@ -94,7 +94,7 @@ aws budgets create-budget \
 Getting `account-d` by entering the following `export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)` in the terminal
 
 
-## Using AWS CLI to create a billing alarm
+### Using AWS CLI to create a billing alarm
 
 https://docs.aws.amazon.com/cli/latest/reference/sns/create-topic.html
 
@@ -113,7 +113,7 @@ aws sns subscribe \
     --notification-endpoint=maurice.huang.pai.so@gmail.com
 ```
 
-## Using AWS CLI to create a cloudwatch alarm
+### Using AWS CLI to create a cloudwatch alarm
 
 https://repost.aws/knowledge-center/cloudwatch-estimatedcharges-alarm
 create a alarm-config.json
