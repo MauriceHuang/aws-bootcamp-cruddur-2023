@@ -1,5 +1,19 @@
 # Week 1 — App Containerization
 
+## Build the docker image for backend.
+```bash
+docker build -t  backend-flask ./backend-flask
+```
+## Run the backend image.
+To run the docker image and set the envrionment variable
+```bash
+docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
+```
+## Build Container for the frontend
+```bash
+docker build -t frontend-react-js ./frontend-react-js
+```
+
 ## Why containerisation?
 1. Reduce time to set up the environment.
 2. Node version or Python version, compilers, these can be different. It can be time consuming to figure out what's causing the different behaviour.
@@ -82,9 +96,9 @@ Is there anything specific you would like to know about this command? flag ensur
 To help in debug, you can run the container, and right click to select `attach shell`
 ![Attach Shell in Docker](assets/week1/docker-attach-shell.png)
 
-To run the docker image and set the envrionment variable
-```bash
-docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
-```
 add `/api/activities/home`, at the end of the url.
 
+## Build Container for the frontend
+```bash
+docker build -t frontend-react-js ./frontend-react-js
+```
