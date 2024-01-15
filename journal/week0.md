@@ -1,5 +1,7 @@
 # Week 0 — Billing and Architecture
 
+## Journal 
+Learn [Markdown](https://www.markdownguide.org/basic-syntax/)
 ## Homework Challenges
 - [x] 1. ~~Destroy~~ Set up your root account credentials, Set MFA, IAM role
 - [ ] 2. Use EventBridge to hookup Health Dashboard to SNS and send notification when there is a service health issue.
