@@ -25,8 +25,15 @@ From the images in the dockerhub, following the `FROM` each image are comprises 
 FROM python:3.10-slim-buster 
 ```
 In the `Dockerfile`, you will see this `CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]` and it is actually the equivalent of the below. 
+
 ```bash
 python3 -m flask run --host=0.0.0.0 --port=4567
+```
+```bash
+docker build -t  backend-flask ./backend-flask
+```
+```bash
+docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
 ```
 
 The command ﻿python3 -m flask run --host=0.0.0.0 --port=4567 is used to run a Flask application. Here's what each argument does:
