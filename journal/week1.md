@@ -102,3 +102,99 @@ add `/api/activities/home`, at the end of the url.
 ```bash
 docker build -t frontend-react-js ./frontend-react-js
 ```
+
+
+## Setting up postgresql and dynamodb local 
+
+### Configuration
+Setting up in docker-compose.yml
+
+``` bash
+# added this to create dynamodb vvv
+  dynamodb-local:
+    # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
+    # We needed to add user:root to get this working.
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+
+  # added this to create dynamodb ^^^^ 
+  #added this to create postgres db vvvv
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+
+  #added this to create postgres db ^^^^
+  ```
+  ```bash
+## added this to create local db   👇🏼
+volumes:
+  db:
+    driver: local
+  ```
+  Refer to this for documentation on setting up dynamoDB using docker. 
+  [Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
+
+Make sure  your aws cli is installing and ready to run. If not do this.
+```shell
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+Then test out the install dynamoDB by following the following: 
+[Setting up locall dnamoDB](https://github.com/100DaysOfCloud/challenge-dynamodb-local)
+
+Dynamodb Local emulates a Dynamodb database in your local envirmoment for rapid developement and table design interation
+
+### Run Docker Local
+```
+docker-compose up
+```
+### Create a table
+```shell
+aws dynamodb create-table \
+    --endpoint-url http://localhost:8000 \
+    --table-name Music \
+    --attribute-definitions \
+        AttributeName=Artist,AttributeType=S \
+        AttributeName=SongTitle,AttributeType=S \
+    --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --table-class STANDARD
+```
+Create an Item
+```shell
+aws dynamodb put-item \
+    --endpoint-url http://localhost:8000 \
+    --table-name Music \
+    --item \
+        '{"Artist": {"S": "No One You Know"}, "SongTitle": {"S": "Call Me Today"}, "AlbumTitle": {"S": "Somewhat Famous"}}' \
+    --return-consumed-capacity TOTAL  
+```
+
+### List Tables
+```shell
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+```
+### Get Records
+```shell
+aws dynamodb scan --table-name cruddur_cruds --query "Items" --endpoint-url http://localhost:8000
+```
+
+###References
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html 
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.CLI.html
