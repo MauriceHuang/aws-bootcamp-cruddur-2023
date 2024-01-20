@@ -102,8 +102,6 @@ add `/api/activities/home`, at the end of the url.
 ```bash
 docker build -t frontend-react-js ./frontend-react-js
 ```
-
-
 ## Setting up postgresql and dynamodb local 
 
 ### Configuration
@@ -147,14 +145,23 @@ volumes:
   ```
   Refer to this for documentation on setting up dynamoDB using docker. 
   [Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
-
+### Install AWS CLI
 Make sure  your aws cli is installing and ready to run. If not do this.
 ```shell
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 ```
-
+### Installing postgresql in gitpod
+```yml 
+#setting up postgres in gitpod
+  - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev
+```
 Then test out the install dynamoDB by following the following: 
 [Setting up locall dnamoDB](https://github.com/100DaysOfCloud/challenge-dynamodb-local)
 
